@@ -1,7 +1,7 @@
 来源B站视频
 
 back分支 jwt demo
-font分支 登录界面
+front分支 登录界面
 
 根目录终端运行 `yarn` 安装依赖
 
