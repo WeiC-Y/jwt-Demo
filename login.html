@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    form {
+      margin-top: 100px;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    input {
+      height: 33px;
+      padding-left: 10px;
+      margin-bottom: 10px;
+      border-radius: 3px;
+      border: 1px solid #ccc;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    input:focus {
+      border: 1px solid #66b1ff;
+    }
+
+    button {
+      background-color: #409eff;
+      color: white;
+      border: none;
+      padding: 9px;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: background-color .2s;
+      margin-bottom: 10px;
+    }
+
+    button:hover {
+      background-color: #66b1ff;
+    }
+
+    button:active {
+      background-color: #3a8ee6;
+    }
+
+    .verify {
+      width: 300px;
+    }
+  </style>
+</head>
+
+<body>
+  <form>
+    <input name="account" type="text" placeholder="account">
+    <input name="password" type="password" placeholder="password">
+
+    <button type="submit">登录</button>
+  </form>
+  <button class="verify">检测 token 合法性</button>
+
+  <script>
+    const form = document.querySelector('form')
+    const verifyBtn = document.querySelector('.verify')
+
+    function request(url, params) {
+      return new Promise((res, rej) => {
+
+        const xhr = new XMLHttpRequest()
+        xhr.open('POST', url, true)
+        xhr.setRequestHeader('content-type', 'application/json');
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              res(xhr.responseText)
+            }
+          }
+        }
+        xhr.send(JSON.stringify(params))
+      })
+    }
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const params = {
+        uname: form.account.value,
+        pwd: form.password.value
+      }
+      const result = await request('http://localhost:3001/token', params)
+      const { code } = JSON.parse(result)
+      if (code === 200) {
+        localStorage.setItem('token', JSON.parse(result).token)
+        window.location.href = 'http://localhost:5500/content.html'
+        alert('登录成功')
+        return
+      }
+
+      return alert(JSON.parse(result).message)
+    })
+
+    verifyBtn.addEventListener('click', async function (e) {
+      e.preventDefault();
+      const params = {
+        token: localStorage.getItem('token') || ''
+      }
+      const result = await request('http://localhost:3001/verify', params)
+      console.log(result);
+    })
+  </script>
+</body>
+
+</html>

@@ -1,8 +1,2 @@
-来源B站视频
-
-back分支 jwt demo
-front分支 登录界面
-
-根目录终端运行 `yarn` 安装依赖
-
-根目录终端运行 `yarn start` 运行项目
+登录页面建议放在 服务器上运行 不要直接本地打开 否则页面跳转无效
+使用 vscode 的建议使用 Live Server 插件 
